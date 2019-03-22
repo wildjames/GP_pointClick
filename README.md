@@ -13,3 +13,10 @@ Optionally:
 
 
 There is also a jupyter notebook that I wrote when learning the mechanics of implimenting George. 
+
+
+To power the plotting script, I used Bokeh. This runs slightly differently to Matplotlib, and needs a server to sustain the IO loop nicely. Rather than using python directly, run `bokeh serve --show GP_pointClick` from the directory *containing* this git repo. i.e., to run it from scratch:
+
+`git clone https://github.com/wildjames/GP_pointClick`
+
+`bokeh serve --show GP_pointClick`
