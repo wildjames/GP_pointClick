@@ -214,6 +214,7 @@ else:
                 kernel_summary.text = "Matern-3/2:</br>"
                 kernel_summary.text += "<img style='height: 100%; width: 100%; object-fit: contain' src='GP_pointClick/static/matern32.png'>"
                 kernel_summary.text += 'r is the distance in x between two subsequent data.'
+            
             elif new_kernel == 5:
                 print("Changing to a constant kernel")
                 
