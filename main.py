@@ -2,7 +2,7 @@
 if __name__ == "__main__":
     print("This is a bokeh script, and isn't run like that! From the directory containing GP_pointClick/ you need to run:")
     print("bokeh serve --show GP_pointClick")
-    
+
 else:
     import matplotlib.pyplot as plt
     import numpy as np
@@ -101,11 +101,11 @@ else:
         error = np.array(source.data['upper']) - np.array(source.data['lower'])
         error /= 2.
         gp.compute(source.data['x'], error)
-        
+
         # Minimize the negative likelihood, i.e. maximize the likelihood of this data for the GP hiperparams
         result = minimize(neg_ln_like, gp.get_parameter_vector(), jac=grad_neg_ln_like)
         gp.set_parameter_vector(result.x)
-        
+
         # Report to the user
         report.text = ''
         report.text += "GP Parameter vector:</br>{}</br></br>".format(gp.get_parameter_vector())
@@ -129,7 +129,7 @@ else:
         Coords=(event.x,event.y)
 
         newdata = dict(
-            x=[Coords[0]], 
+            x=[Coords[0]],
             y=[Coords[1]],
             upper=[Coords[1]+yerr],
             lower=[Coords[1]-yerr]
@@ -143,8 +143,8 @@ else:
         except:
             pass
 
-    def change_kernel(attr, old, new):
-        new_kernel = int(selectKernel.value)
+    def change_kernel(event):
+        new_kernel = int(event.item)
 
         global kernel
         global gp
@@ -163,66 +163,66 @@ else:
 
             if new_kernel == 0:
                 print("Changing kernel to Matern-5/2")
-                
+
                 kernel = g.kernels.Matern52Kernel(l)
-                
+
                 p.title.text = 'Double click to leave a dot. Using {}Kernel'.format('Matern-5/2')
-                
+
                 kernel_summary.text = "Matern-5/2:</br>"
                 kernel_summary.text += "<img style='height: 100%; width: 100%; object-fit: contain' src='GP_pointClick/static/matern52.png'>"
                 kernel_summary.text += 'r is the distance in x between two subsequent data.'
 
             elif new_kernel == 1:
                 print('Changing kernel to ExpSquared')
-                
+
                 kernel = g.kernels.ExpSquaredKernel(l)
-                
+
                 p.title.text = 'Double click to leave a dot. Using {}Kernel'.format('ExpSquared')
-                
+
                 kernel_summary.text = "ExpSquared:</br>"
                 kernel_summary.text += "<img style='height: 100%; width: 100%; object-fit: contain' src='GP_pointClick/static/expsquared.png'>"
                 kernel_summary.text += 'r is the distance in x between two subsequent data.'
 
             elif new_kernel == 2:
                 print("Changing kernel to RationalQuadratic")
-                
+
                 log_alpha = 1
                 kernel = g.kernels.RationalQuadraticKernel(log_alpha=log_alpha, metric=l)
-                
+
                 p.title.text = 'Double click to leave a dot. Using {}Kernel, with log_alpha={}'.format('RationalQuadratic', log_alpha)
-                
+
                 kernel_summary.text = "RationalQuadratic:</br>"
                 kernel_summary.text += "<img style='height: 100%; width: 100%; object-fit: contain' src='GP_pointClick/static/rationalquad.png'>"
                 kernel_summary.text += "r is the distance in x between two subsequent data, and alpha is a scale length dictiating the 'memory' of the process."
 
             elif new_kernel == 3:
                 print("Changing kernel to Exp")
-                
+
                 kernel = g.kernels.ExpKernel(l)
-                
+
                 kernel_summary.text = "Exp:</br>"
                 kernel_summary.text += "<img style='height: 100%; width: 100%; object-fit: contain' src='GP_pointClick/static/exp.png'>"
                 kernel_summary.text += 'r is the distance in x between two subsequent data.'
 
             elif new_kernel == 4:
                 print("Changing kernel to Matern-3/2")
-                
+
                 kernel = g.kernels.Matern32Kernel(l)
-                
+
                 p.title.text = 'Double click to leave a dot. Using {}Kernel'.format('Matern-3/2')
-                
+
                 kernel_summary.text = "Matern-3/2:</br>"
                 kernel_summary.text += "<img style='height: 100%; width: 100%; object-fit: contain' src='GP_pointClick/static/matern32.png'>"
                 kernel_summary.text += 'r is the distance in x between two subsequent data.'
-            
+
             elif new_kernel == 5:
                 print("Changing to a constant kernel")
-                
+
                 val = 1
                 kernel = g.kernels.ConstantKernel(val)
-                
+
                 p.title.text = 'Double click to leave a dot. Using {}Kernel with the value {}'.format('Constant', val)
-                
+
                 kernel_summary.text = ''
 
             gp = g.GP(kernel)
@@ -232,9 +232,9 @@ else:
 
     # Link the figure
     p.on_event(DoubleTap, callback)
-    selectKernel.on_change('value', change_kernel)
+    selectKernel.on_click(change_kernel)
 
-    layout = row([p, 
+    layout = row([p,
         column([selectKernel,kernel_summary, report])
     ])
 
